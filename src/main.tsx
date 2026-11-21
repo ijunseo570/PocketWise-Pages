@@ -109,7 +109,7 @@ function Workspace({ ledger, commit, notice }: { ledger: Ledger; commit: Commit;
             <Analysis ledger={ledger} today={today} add={addExpense} settings={settings} />
           </Suspense>} />
           <Route path="/goals" element={<Goals ledger={ledger} today={today} add={() => editGoal()} edit={editGoal} />} />
-          <Route path="/coach" element={<Coach />} />
+          <Route path="/coach" element={<Coach ledger={ledger} today={today} />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
