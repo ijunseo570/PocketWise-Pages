@@ -21,7 +21,7 @@ const digits = '영일이삼사오육칠팔구'
 const units: Record<string, number> = { 억: 1e8, 만: 1e4, 천: 1e3, 백: 1e2, 십: 10 }
 const pricePattern = /(?<![\d,.영공일이삼사오육칠팔구십백천만억\-−])([\-−]?[\d,.영공일이삼사오육칠팔구십백천만억]+)(?:원|짜리)/
 const amountTerm = /(\d[\d,]*(?:\.\d+)?|[영공일이삼사오육칠팔구])?([억만천백십])|(\d[\d,]*|[영공일이삼사오육칠팔구])/g
-const purchaseWords = /사도|사면|사고싶|살수|살까|살건|구매해|구매하|구매할|결제해도|결제하면|지불해도/
+const purchaseWords = /사도|사면|사고싶|살수|살까|살건|구매해|구매하|구매할|결제해도|결제하면|지불해도|먹어도|마셔도|시켜도/
 const guidanceWords = /써도|쓸수|쓸까|쓸돈|권장|더쓸|얼마까지|하루예산/
 const helpWords = /용돈|잔액|수입|지출|예산|저축|목표|소비|카테고리|구매|기록|결제|저장|그래프|시뮬레이터|로그인|비교/
 const amountWords = /얼마|합계|총액|총지출|썼|씀|쓴|쓰는|나갔|많이|내역|알려|줄이|줄일/
@@ -177,7 +177,8 @@ export function replyToCoach(question: string, ledger: Ledger, today: string, pr
   const price = priceFrom(text, previousPurchase)
   if (manualQuestion.test(text)) return { text: findAnswer(question) }
   const isFollowUp = previousPurchase && price !== null && /^(그럼|그러면|[₩\d]|[일이삼사오육칠팔구십백천만])/.test(text)
-  if (purchaseWords.test(text) || isFollowUp) return purchaseReply(ledger, today, price)
+  const isPriceJudgment = price !== null && /짜리|결제|구매/.test(text) && /괜찮|가능|어때/.test(text)
+  if (purchaseWords.test(text) || isFollowUp || isPriceJudgment) return purchaseReply(ledger, today, price)
   if (/저축|모으|모아|달성일|목표/.test(text)) return { text: savingsReply(ledger, today, text, price) }
   if (/지난달|전월/.test(text) && /비교|보다|대비|늘었|줄었|차이/.test(text)) return { text: compareMonths(ledger, today) }
   const summary = ledgerSummary(ledger, today)
